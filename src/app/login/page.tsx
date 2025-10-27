@@ -22,7 +22,12 @@ export default function Login({
     })
 
     if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      console.error('Sign in error:', error)
+      return redirect(
+        `/login?message=${encodeURIComponent(
+          error.message || 'Could not authenticate user',
+        )}`,
+      )
     }
 
     return redirect('/')
@@ -37,7 +42,7 @@ export default function Login({
     const cookieStore = cookies()
     const supabase = createServerClient(cookieStore)
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -46,10 +51,30 @@ export default function Login({
     })
 
     if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      console.error('Sign up error:', error)
+      // Check if it's specifically an email error
+      if (
+        error.message.includes('confirmation email') ||
+        error.status === 500
+      ) {
+        return redirect(
+          '/login?message=Email configuration issue. Please contact admin or check Supabase email settings.',
+        )
+      }
+      return redirect(
+        `/login?message=${encodeURIComponent(
+          error.message || 'Could not authenticate user',
+        )}`,
+      )
     }
 
-    return redirect('/login?message=Check email to continue sign in process')
+    console.log('Sign up success, user data:', {
+      userId: data.user?.id,
+      email: data.user?.email,
+    })
+    return redirect(
+      '/login?message=You’re already registered, please log in again ',
+    )
   }
 
   return (
@@ -112,6 +137,12 @@ export default function Login({
             {searchParams.message}
           </p>
         )}
+        <div className="mt-4 text-xs text-slate-400">
+          <p>
+            Note: If sign up fails, please check your Supabase email
+            configuration.
+          </p>
+        </div>
       </form>
     </div>
   )

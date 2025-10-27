@@ -6,14 +6,35 @@ import {
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
-export const createBrowserClient = () =>
-  browserClient(
+export const createBrowserClient = () => {
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    console.error(
+      'Missing Supabase environment variables. Please check your .env.local file.',
+    )
+    throw new Error('Missing Supabase environment variables')
+  }
+
+  return browserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   )
+}
 
-export const createServerClient = (cookieStore: ReturnType<typeof cookies>) =>
-  serverClient(
+export const createServerClient = (cookieStore: ReturnType<typeof cookies>) => {
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    console.error(
+      'Missing Supabase environment variables. Please check your .env.local file.',
+    )
+    throw new Error('Missing Supabase environment variables')
+  }
+
+  return serverClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -42,8 +63,19 @@ export const createServerClient = (cookieStore: ReturnType<typeof cookies>) =>
       },
     },
   )
+}
 
 export const createMiddlewareClient = (request: NextRequest) => {
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    console.error(
+      'Missing Supabase environment variables. Please check your .env.local file.',
+    )
+    throw new Error('Missing Supabase environment variables')
+  }
+
   // Create an unmodified response
   let response = NextResponse.next({ request: { headers: request.headers } })
 

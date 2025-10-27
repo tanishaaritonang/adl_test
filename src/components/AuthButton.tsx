@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServerClient } from '@/utils/supabase'
+import AuthButtonClient from './AuthButtonClient'
 
 export default async function AuthButton() {
   const cookieStore = cookies()
@@ -21,14 +22,7 @@ export default async function AuthButton() {
   }
 
   return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {user.email}!
-      <form action={signOut}>
-        <button className="bg-btn-background hover:bg-btn-background-hover rounded-md px-4 py-2 no-underline">
-          Logout
-        </button>
-      </form>
-    </div>
+    <AuthButtonClient />
   ) : (
     <Link
       href="/login"

@@ -13,6 +13,7 @@ export async function middleware(request: NextRequest) {
 
     return response
   } catch (e) {
+    console.error('Middleware error:', e)
     // If you are here, a Supabase client could not be created!
     // This is likely because you have not set up environment variables.
     // Check out http://localhost:3000 for Next Steps.

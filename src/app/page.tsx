@@ -5,9 +5,33 @@ import Header from '@/components/Header'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@/utils/supabase'
 import ThemeToggle from '@/components/ThemeToggle'
+import { redirect } from 'next/navigation'
 
 export default async function Index() {
   const cookieStore = cookies()
+
+  const {
+    data: { user },
+  } = await createServerClient(cookieStore).auth.getUser()
+
+  // If user is logged in, redirect to their dashboard
+  if (user) {
+    // Get user profile to determine role
+    const supabase = createServerClient(cookieStore)
+    const { data: profileData, error } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (!error && profileData?.role) {
+      if (profileData.role === 'instructor') {
+        redirect('/instructor')
+      } else if (profileData.role === 'student') {
+        redirect('/student')
+      }
+    }
+  }
 
   const canInitSupabaseClient = () => {
     // This function is just for the interactive tutorial.
