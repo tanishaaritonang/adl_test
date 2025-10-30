@@ -32,8 +32,8 @@ export default function ManageModulePage() {
         const contentData = await getModuleContentsByModule(id)
         setContents(contentData)
 
-        // Fetch all items for this module
-        const itemData = await getItemsByModuleAndType(id, 'practice') // Get practice items
+        // Fetch all items for this module (practice items)
+        const itemData = await getItemsByModuleAndType(id, 'practice')
         setItems(itemData)
       } catch (error) {
         console.error('Error fetching module data:', error)
@@ -47,8 +47,8 @@ export default function ManageModulePage() {
 
   if (!userProfile || userProfile.role !== 'instructor') {
     return (
-      <div className="mx-auto max-w-4xl p-6">
-        <div className="rounded-md bg-red-100 p-4 text-red-700">
+      <div className="mx-auto max-w-4xl p-6 text-black">
+        <div className="rounded-md bg-red-100 p-4 text-black">
           Access denied. Only instructors can manage modules.
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function ManageModulePage() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-4xl p-6">
+      <div className="mx-auto max-w-4xl p-6 text-black">
         <p>Loading module...</p>
       </div>
     )
@@ -65,8 +65,8 @@ export default function ManageModulePage() {
 
   if (!module) {
     return (
-      <div className="mx-auto max-w-4xl p-6">
-        <div className="rounded-md bg-red-100 p-4 text-red-700">
+      <div className="mx-auto max-w-4xl p-6 text-black">
+        <div className="rounded-md bg-red-100 p-4 text-black">
           Module not found.
         </div>
       </div>
@@ -74,12 +74,12 @@ export default function ManageModulePage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-6">
+    <div className="mx-auto max-w-4xl p-6 text-black">
       <h1 className="mb-6 text-2xl font-bold">Manage Module: {module.title}</h1>
 
       <div className="mb-8">
         <h2 className="mb-4 text-xl font-semibold">Module Details</h2>
-        <div className="rounded-lg bg-white p-6 shadow">
+        <div className="rounded-lg bg-white p-6 text-black shadow">
           <p>
             <span className="font-semibold">Title:</span> {module.title}
           </p>
@@ -109,7 +109,7 @@ export default function ManageModulePage() {
                 {content ? (
                   <div className="whitespace-pre-line">{content.content}</div>
                 ) : (
-                  <p className="text-gray-500">
+                  <p className="text-black/70">
                     No content available for this level
                   </p>
                 )}
@@ -130,7 +130,7 @@ export default function ManageModulePage() {
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="font-medium">{item.question}</h3>
-                    <p className="mt-1 text-sm text-gray-600">
+                    <p className="mt-1 text-sm">
                       <span className="font-semibold">Type:</span>{' '}
                       {item.question_type} |
                       <span className="font-semibold"> Level:</span>{' '}

@@ -39,6 +39,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
+      setIsLoading(true)
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -54,6 +55,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
         if (error) {
           console.error('Error fetching user profile:', error)
+          // Don't return immediately, we still need to set loading to false
         } else if (data) {
           setUserProfile(data as UserProfile)
         }
@@ -74,6 +76,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       if (session?.user) {
         setUser(session.user)
         // Fetch user profile
+        setIsLoading(true)
         const { data, error } = await supabase
           .from('profiles')
           .select('id, full_name, email, role, created_at')
@@ -82,14 +85,17 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
         if (error) {
           console.error('Error fetching user profile:', error)
+          setIsLoading(false)
+          // Don't return immediately, we still need to handle the user
         } else if (data) {
           setUserProfile(data as UserProfile)
         }
+        setIsLoading(false)
       } else {
         setUser(null)
         setUserProfile(null)
+        setIsLoading(false)
       }
-      setIsLoading(false)
     })
 
     return () => {

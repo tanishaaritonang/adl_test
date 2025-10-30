@@ -56,23 +56,21 @@ export default function ModuleUploadPage() {
       })
 
       // Save module contents for each level
-      for (const level of ['easy', 'medium', 'high']) {
-        if (aiContent[`content_${level as 'easy' | 'medium' | 'high'}`]) {
+      for (const level of ['easy', 'medium', 'high'] as const) {
+        const body = aiContent[`content_${level}`]
+        if (body) {
           await createModuleContent({
             module_id: newModule.id,
-            level: level as 'easy' | 'medium' | 'high',
-            content:
-              aiContent[`content_${level as 'easy' | 'medium' | 'high'}`],
+            level,
+            content: body,
           })
         }
       }
 
       // Save questions for each level
-      for (const level of ['easy', 'medium', 'high']) {
-        const questions =
-          aiContent.questions[level as 'easy' | 'medium' | 'high']
+      for (const level of ['easy', 'medium', 'high'] as const) {
+        const questions = aiContent.questions[level]
         if (questions) {
-          // Combine MCQ and short answer questions
           const allQuestions = [
             ...questions.mcq.map((q: any) => ({ ...q, question_type: 'mcq' })),
             ...questions.short.map((q: any) => ({
@@ -83,8 +81,8 @@ export default function ModuleUploadPage() {
 
           const itemsToInsert = allQuestions.map((q: any) => ({
             module_id: newModule.id,
-            level: level as 'easy' | 'medium' | 'high',
-            type: 'practice', // Default to practice, can be changed later
+            level,
+            type: 'practice',
             question_type: q.question_type,
             question: q.question,
             options: q.question_type === 'mcq' ? q.options : null,
@@ -113,7 +111,7 @@ export default function ModuleUploadPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <div className="mx-auto max-w-2xl p-6 text-black">
       <h1 className="mb-6 text-2xl font-bold">Upload Learning Module</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -126,7 +124,7 @@ export default function ModuleUploadPage() {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full rounded-md border px-3 py-2"
+            className="w-full rounded-md border px-3 py-2 text-black"
             required
           />
         </div>
@@ -142,7 +140,7 @@ export default function ModuleUploadPage() {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full rounded-md border px-3 py-2"
+            className="w-full rounded-md border px-3 py-2 text-black"
             rows={3}
           />
         </div>
@@ -156,7 +154,7 @@ export default function ModuleUploadPage() {
             id="file"
             accept=".txt,.pdf"
             onChange={handleFileChange}
-            className="w-full rounded-md border px-3 py-2"
+            className="w-full rounded-md border px-3 py-2 text-black"
             required
           />
         </div>
@@ -164,17 +162,15 @@ export default function ModuleUploadPage() {
         <button
           type="submit"
           disabled={isUploading}
-          className="w-full rounded-md bg-green-700 px-4 py-2 text-white hover:bg-green-800 disabled:opacity-50"
+          className="w-full rounded-md bg-green-700 px-4 py-2 text-black hover:bg-green-800 disabled:opacity-50"
         >
           {isUploading ? 'Uploading and Generating...' : 'Upload Module'}
         </button>
 
         {uploadStatus && (
           <div
-            className={`rounded-md p-3 ${
-              uploadStatus.includes('Error')
-                ? 'bg-red-100 text-red-700'
-                : 'bg-green-100 text-green-700'
+            className={`rounded-md p-3 text-black ${
+              uploadStatus.includes('Error') ? 'bg-red-100' : 'bg-green-100'
             }`}
           >
             {uploadStatus}
