@@ -17,7 +17,7 @@ export default function ModuleUploadPage() {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadStatus, setUploadStatus] = useState('')
   const router = useRouter()
-  const { userProfile } = useUser()
+  const { user } = useUser()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -33,7 +33,7 @@ export default function ModuleUploadPage() {
       return
     }
 
-    if (!userProfile) {
+    if (!user) {
       alert('User profile not found')
       return
     }
@@ -50,7 +50,7 @@ export default function ModuleUploadPage() {
 
       // Create module
       const newModule = await createModule({
-        instructor_id: userProfile.id,
+        instructor_id: user.id,
         title,
         description,
       })

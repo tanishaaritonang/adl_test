@@ -42,7 +42,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       const {
         data: { user },
       } = await supabase.auth.getUser()
-
+      console.log('r', user)
       if (user) {
         setUser(user)
         // Fetch user profile
@@ -105,6 +105,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   return (
     <UserContext.Provider value={{ user, userProfile, isLoading, signOut }}>
+      {user && JSON.stringify(user)}
       {children}
     </UserContext.Provider>
   )
