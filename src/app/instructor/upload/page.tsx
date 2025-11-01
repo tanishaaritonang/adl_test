@@ -143,6 +143,14 @@ export default function ModuleUploadPage() {
             `[ERROR] Failed to save content to module_contents table:`,
             contentError,
           )
+          // Show a more specific error to the user
+          setUploadStatus(
+            `Error saving ${difficulty} content to database: ${
+              contentError instanceof Error
+                ? contentError.message
+                : 'Unknown error'
+            }`,
+          )
           throw contentError // Re-throw to be caught by the outer catch block
         }
       }
